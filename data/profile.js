@@ -14,7 +14,7 @@ export const profile = {
   // Leave a link as null to hide it everywhere on the site
   scholar: null,
   // Placeholder: replace with your real LinkedIn profile URL
-  linkedin: "https://www.linkedin.com/in/your-profile",
+  linkedin: "https://www.linkedin.com/",
   orcid: null,
   cv: "/Himanshu_Singh_CV.pdf",
 
