@@ -28,7 +28,6 @@ export const underReviewPublications = [
   {
     id: 102,
     title: "Risk-Calibrated Communication and Adaptive Safe Recovery in Hierarchical Multi-Agent Reinforcement Learning under Compound Communication Failures",
-    // TODO: add the preprint link to `pdf`
     authors: ["Himanshu Singh, Ali Akarma"],
     authorsStr: "Himanshu Singh, Ali Akarma",
     venue: "Under Review · Journal (preprint available)",
@@ -40,6 +39,7 @@ export const underReviewPublications = [
     statusLabel: "Under Review · Journal · Preprint available",
     tags: ["Reinforcement Learning", "Multi-Agent Systems", "Safety", "Communication Failures"],
     doi: null,
+    preprint: "https://www.preprints.org/manuscript/202610.2598",
     pdf: null,
     code: null,
     dataset: null,

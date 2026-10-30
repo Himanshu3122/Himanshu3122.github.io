@@ -271,6 +271,18 @@ export default function PublicationCard({ pub, index = 0 }) {
               </a>
             )}
 
+            {pub.preprint && (
+              <a
+                href={pub.preprint}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`View preprint of ${pub.title} (opens in new tab)`}
+                className="flex items-center gap-1 text-xs font-mono text-parchment-400 hover:text-gold-400 min-h-[36px] px-1"
+              >
+                <ExternalLink size={11} aria-hidden="true" /> Preprint
+              </a>
+            )}
+
             {pub.pdf && (
               <a
                 href={pub.pdf}

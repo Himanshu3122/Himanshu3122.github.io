@@ -12,7 +12,7 @@ export const profile = {
   github: "https://github.com/Himanshu3122",
   githubHandle: "Himanshu3122",
   // Leave a link as null to hide it everywhere on the site
-  scholar: null,
+  scholar: "https://scholar.google.com/citations?user=HFStV0gAAAAJ&hl=en",
   // Placeholder: replace with your real LinkedIn profile URL
   linkedin: "https://www.linkedin.com/",
   orcid: null,
