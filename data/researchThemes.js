@@ -1,0 +1,110 @@
+// data/researchThemes.js — nodes and edges for the research knowledge graph
+// `papers` lists related publication/project entries; only its length is shown.
+
+export const researchNodes = [
+  {
+    id: "data-centers",
+    label: "Data Center Power",
+    group: "core",
+    size: 22,
+    description: "Power profiling and load modeling of cloud and AI data centers",
+    papers: ["pub-1", "rev-103", "proj-1", "proj-2"],
+  },
+  {
+    id: "stochastic",
+    label: "Stochastic Modeling",
+    group: "core",
+    size: 18,
+    description: "NHPP, jump-diffusion, and distribution fitting for workloads and traffic",
+    papers: ["pub-1", "rev-101", "proj-1", "proj-2"],
+  },
+  {
+    id: "power-systems",
+    label: "Power Systems",
+    group: "core",
+    size: 16,
+    description: "Transient stability, load frequency control, and distribution networks",
+    papers: ["rev-103", "rev-104", "proj-2", "proj-3"],
+  },
+  {
+    id: "energy-efficiency",
+    label: "Sustainable Computing",
+    group: "domain",
+    size: 13,
+    description: "Energy proportionality and green data-center operation",
+    papers: ["proj-1"],
+  },
+  {
+    id: "gpu-llm",
+    label: "GPU & LLM Workloads",
+    group: "domain",
+    size: 13,
+    description: "Electrical power behavior of LLM inference in GPU clusters",
+    papers: ["pub-1", "rev-101"],
+  },
+  {
+    id: "smart-grid",
+    label: "Smart Grid & V2G",
+    group: "domain",
+    size: 13,
+    description: "Vehicle-to-grid scheduling and dynamic energy pricing",
+    papers: ["rev-104", "proj-3"],
+  },
+  {
+    id: "ml-rl",
+    label: "ML & Reinforcement Learning",
+    group: "method",
+    size: 14,
+    description: "Learned controllers and ML for computing and energy systems",
+    papers: ["rev-102", "rev-104", "proj-3"],
+  },
+  {
+    id: "multi-agent",
+    label: "Multi-Agent Systems",
+    group: "core",
+    size: 16,
+    description: "Multi-agent LLM workflows and safe hierarchical multi-agent RL",
+    papers: ["rev-101", "rev-102", "rev-104"],
+  },
+  {
+    id: "simulation",
+    label: "Simulation",
+    group: "method",
+    size: 12,
+    description: "MATLAB/Simulink and Python simulation of power and compute systems",
+    papers: ["proj-1", "proj-2", "proj-3"],
+  },
+  {
+    id: "optimization",
+    label: "Optimization",
+    group: "method",
+    size: 11,
+    description: "Particle swarm optimization and load-flow based scheduling",
+    papers: ["proj-3"],
+  },
+]
+
+export const researchEdges = [
+  { source: "data-centers",  target: "stochastic",        weight: 3 },
+  { source: "data-centers",  target: "power-systems",     weight: 3 },
+  { source: "data-centers",  target: "energy-efficiency", weight: 2 },
+  { source: "data-centers",  target: "gpu-llm",           weight: 2 },
+  { source: "stochastic",    target: "gpu-llm",           weight: 2 },
+  { source: "stochastic",    target: "simulation",        weight: 2 },
+  { source: "power-systems", target: "smart-grid",        weight: 2 },
+  { source: "power-systems", target: "simulation",        weight: 2 },
+  { source: "smart-grid",    target: "ml-rl",             weight: 2 },
+  { source: "smart-grid",    target: "optimization",      weight: 2 },
+  { source: "ml-rl",         target: "optimization",      weight: 1 },
+  { source: "energy-efficiency", target: "simulation",    weight: 1 },
+  { source: "multi-agent",   target: "ml-rl",             weight: 3 },
+  { source: "multi-agent",   target: "gpu-llm",           weight: 2 },
+  { source: "multi-agent",   target: "stochastic",        weight: 2 },
+  { source: "multi-agent",   target: "smart-grid",        weight: 2 },
+]
+
+export const groupColors = {
+  core:   "#0ea5e9",
+  method: "#a78bfa",
+  domain: "#86efac",
+}

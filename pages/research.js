@@ -1,0 +1,449 @@
+import Head from 'next/head'
+import Link from 'next/link'
+import { useState, useMemo, useDeferredValue } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Filter, BookOpen, ExternalLink, TrendingUp, FileText, Layers, ChevronDown, ChevronUp, Code2, ArrowRight } from 'lucide-react'
+import Meta from '../components/Meta'
+import PageTransition from '../components/PageTransition'
+import SectionReveal from '../components/SectionReveal'
+import PublicationCard from '../components/PublicationCard'
+import { publications } from '../data/publications'
+import { underReviewPublications } from '../data/underReview'
+import { blogPosts } from '../data/blog'
+import { projects } from '../data/projects'
+import { profile } from '../data/profile'
+import { jsonLd } from '../lib/jsonld'
+
+const allPublications = [...publications, ...underReviewPublications]
+const ALL_TAGS = [...new Set(allPublications.flatMap(p => p.tags))].sort()
+
+const normalize = (value) => String(value ?? '').trim().toLowerCase()
+
+// Add 'first_author' or 'book_chapter' back here once such entries exist
+const TYPE_FILTERS    = ['All', 'conference', 'journal']
+const STATUS_FILTERS  = ['All', 'published', 'accepted', 'under_review']
+
+const TYPE_LABELS = {
+  All:          'All Types',
+  first_author: 'First Author Papers',
+  conference:   'Conference',
+  journal:      'Journal',
+  book_chapter: 'Book Chapter',
+}
+
+const STATUS_LABELS = {
+  All:          'All',
+  published:    'Published',
+  accepted:     'Accepted',
+  under_review: 'Under Review',
+}
+
+/*
+  ScholarlyArticle structured data — makes each publication individually
+  machine-readable for Google Scholar, academic crawlers, and rich results.
+  Only published/accepted work is included to keep claims verifiable.
+*/
+const SCHOLARLY_JSONLD = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: `Publications by ${profile.name}`,
+  itemListElement: publications
+    .filter(p => p.status === 'published' || p.status === 'accepted')
+    .map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'ScholarlyArticle',
+        headline: p.title,
+        author: p.authorsStr.split(', ').map(name => ({ '@type': 'Person', name })),
+        datePublished: String(p.year),
+        publisher: { '@type': 'Organization', name: p.venue },
+        isPartOf: { '@type': 'Periodical', name: p.venue },
+        about: p.tags,
+        ...(p.abstract ? { abstract: p.abstract } : {}),
+        ...(p.doi ? { sameAs: p.doi, url: p.doi } : {}),
+      },
+    })),
+}
+
+export default function Research() {
+  const [statusFilter, setStatusFilter] = useState('All')
+  const [typeFilter,   setTypeFilter]   = useState('All')
+  const [tagFilter,    setTagFilter]    = useState(null)
+  /* Responsive Fix: tags panel collapses on mobile to reduce filter height */
+  const [showTags,     setShowTags]     = useState(false)
+
+  /*
+    INP: a filter click used to re-render every PublicationCard (and run
+    Framer's layout measurement for each) before the pressed button could
+    repaint — 150–370 ms per click at 4x CPU. The buttons read the live state;
+    the list reads these deferred copies, so the click paints immediately and
+    the list follows in an interruptible background render.
+  */
+  const deferredStatus = useDeferredValue(statusFilter)
+  const deferredType   = useDeferredValue(typeFilter)
+  const deferredTag    = useDeferredValue(tagFilter)
+
+  const filtered = useMemo(() => {
+    const statusFilter = deferredStatus
+    const typeFilter   = deferredType
+    const tagFilter    = deferredTag
+    /*
+      'All' spans the full record, including manuscripts under review, so the
+      list agrees with the 'Total' stat card above it. The named status
+      filters draw only from the set they describe.
+    */
+    const sourceList =
+      statusFilter === 'All'
+        ? allPublications
+        : statusFilter === 'under_review'
+        ? underReviewPublications
+        : publications
+
+    return sourceList
+      .filter(p => {
+        const pStatus = normalize(p.status)
+        const s =
+          statusFilter === 'All' ||
+          statusFilter === 'under_review' ||
+          pStatus === normalize(statusFilter)
+        /*
+          First authorship is a property of the paper, so it lives on the
+          record as `isFirstAuthor`. This previously matched three full title
+          strings inline, which meant correcting a typo in any of those titles
+          silently dropped the paper out of the filter.
+        */
+        const t =
+          typeFilter === 'All'
+            ? true
+            : typeFilter === 'first_author'
+            ? p.isFirstAuthor === true
+            : normalize(p.type) === normalize(typeFilter)
+        const g = !tagFilter || p.tags.some(tag => normalize(tag) === normalize(tagFilter))
+        return s && t && g
+      })
+      .sort((a, b) => {
+        const aIsReview = normalize(a.status) === 'under_review'
+        const bIsReview = normalize(b.status) === 'under_review'
+
+        // Under-review papers always appear at the end of the list
+        if (aIsReview && !bIsReview) return 1
+        if (!aIsReview && bIsReview) return -1
+
+        // Within the same status category, sort newest first (exact date descending, then id descending)
+        const timeA = a.date ? new Date(a.date).getTime() : new Date(`${a.year || 2025}-01-01`).getTime()
+        const timeB = b.date ? new Date(b.date).getTime() : new Date(`${b.year || 2025}-01-01`).getTime()
+        return timeB - timeA || b.id - a.id
+      })
+  }, [deferredStatus, deferredType, deferredTag])
+
+  /* Denominator for the "Showing X of Y" line — mirrors whichever set the
+     active status filter draws from, so the two numbers always agree. */
+  const sourceTotal =
+    deferredStatus === 'All'
+      ? allPublications.length
+      : deferredStatus === 'under_review'
+      ? underReviewPublications.length
+      : publications.length
+
+  const counts = {
+    published: publications.filter(p => p.status === 'published').length,
+    accepted:  publications.filter(p => p.status === 'accepted').length,
+    review:    underReviewPublications.length,
+    total:     allPublications.length,
+  }
+
+  /* Memoized on the deferred result so the urgent render skips the list —
+     including its layout wrapper, whose re-render alone makes Framer
+     re-measure every card. */
+  const publicationList = useMemo(() => (
+    <motion.div layout="position" className="space-y-4">
+      <AnimatePresence mode="popLayout">
+        {filtered.map((pub, i) => (
+          <PublicationCard key={pub.id} pub={pub} index={i} />
+        ))}
+      </AnimatePresence>
+    </motion.div>
+  ), [filtered])
+
+  return (
+    <>
+      <Meta
+        title="Research Archive"
+        description={`Publications and manuscripts by ${profile.name} on data-center power modeling, multi-agent LLM workflows, and safe multi-agent reinforcement learning.`}
+      />
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLd(SCHOLARLY_JSONLD) }}
+        />
+      </Head>
+
+      <PageTransition>
+        <div className="min-h-screen pt-28 pb-24">
+          <div className="max-w-5xl xl:max-w-6xl mx-auto px-4 sm:px-6">
+
+            {/* HEADER */}
+            <SectionReveal>
+              <div className="mb-14">
+                <div className="flex items-center gap-4 mb-4">
+                  <span className="w-2 h-2 rounded-full bg-gold-400 shadow-[0_0_10px_rgba(56,189,248,0.8)]" aria-hidden="true" />
+                  <span className="text-sm font-semibold text-gold-400">Publications</span>
+                </div>
+                <h1
+                  className="font-display font-light text-parchment-100 mb-4"
+                  style={{ fontSize: 'clamp(2rem, 5vw, 4rem)' }}
+                >
+                  Research <span className="gold-text italic">Archive</span>
+                </h1>
+                <p className="font-body text-parchment-300 max-w-2xl mb-8">
+                  {publications.length} accepted {publications.length === 1 ? 'paper' : 'papers'} plus{' '}
+                  {underReviewPublications.length} manuscripts under review, spanning data-center power modeling,
+                  multi-agent LLM workflows, and safe multi-agent reinforcement learning. I also write short{' '}
+                  <Link href="/blog" className="text-gold-400 hover:underline">research notes</Link> on
+                  my projects' findings and practical implications.
+                </p>
+                <div className="section-divider" />
+              </div>
+            </SectionReveal>
+
+            {/* STATS */}
+            <SectionReveal>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-10">
+                {[
+                  { icon: <FileText  size={16} />, value: counts.published, label: 'Published',    bg: 'bg-emerald-900/20 border-emerald-600/20' },
+                  { icon: <TrendingUp size={16}/>, value: counts.accepted,  label: 'Accepted',     bg: 'bg-sky-900/20 border-sky-600/20' },
+                  { icon: <Layers    size={16} />, value: counts.review,    label: 'Under Review', bg: 'bg-amber-900/20 border-amber-600/20' },
+                  { icon: <BookOpen  size={16} />, value: counts.total,     label: 'Total',        bg: 'bg-gold-900/20 border-gold-600/20' },
+                ].map(m => (
+                  <div key={m.label} className={`glass-card border p-3 sm:p-4 flex items-center gap-2 sm:gap-3 ${m.bg}`}>
+                    <div className="text-gold-400 flex-shrink-0" aria-hidden="true">{m.icon}</div>
+                    <div className="min-w-0">
+                      <div className="font-display text-xl sm:text-2xl text-parchment-100">{m.value}</div>
+                      <div className="font-mono text-xs text-parchment-400 truncate">{m.label}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </SectionReveal>
+
+            {/* GOOGLE SCHOLAR */}
+            {profile.scholar && <SectionReveal>
+              <a
+                href={profile.scholar}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="View full citation metrics on Google Scholar (opens in new tab)"
+                className="inline-flex items-center gap-3 mb-10 p-4 glass-card border-gold-500/20 hover:border-gold-500/40 transition-all"
+              >
+                <BookOpen size={15} className="text-gold-400 flex-shrink-0" aria-hidden="true" />
+                <div>
+                  <p className="font-mono text-xs text-parchment-400">Full citation metrics</p>
+                  <p className="font-mono text-xs text-gold-400 flex items-center gap-1">
+                    Google Scholar Profile <ExternalLink size={10} aria-hidden="true" />
+                  </p>
+                </div>
+              </a>
+            </SectionReveal>}
+
+            {/* FILTERS */}
+            <SectionReveal>
+              <div
+                className="mb-8 p-4 sm:p-5 glass-card border border-gold-500/10 space-y-4"
+                role="search"
+                aria-label="Filter publications"
+              >
+                <div className="flex items-center gap-2">
+                  <Filter size={13} className="text-gold-400" aria-hidden="true" />
+                  <span className="text-sm font-semibold text-gold-400">
+                    Filter Publications
+                  </span>
+                </div>
+
+                {/* STATUS */}
+                <fieldset>
+                  <legend className="font-mono text-xs text-parchment-400/60 mb-2">Status</legend>
+                  <div className="flex flex-wrap gap-2">
+                    {STATUS_FILTERS.map(s => (
+                      <button
+                        type="button"
+                        key={s}
+                        onClick={() => setStatusFilter(s)}
+                        aria-pressed={statusFilter === s}
+                        aria-label={`Filter by status: ${STATUS_LABELS[s]}`}
+                        className={`font-mono text-xs px-3 py-1.5 border rounded-lg transition-all min-h-[36px] ${
+                          statusFilter === s
+                            ? 'border-gold-500/60 bg-gold-500/15 text-gold-300'
+                            : 'border-parchment-300/15 text-parchment-400 hover:border-gold-500/30'
+                        }`}
+                      >
+                        {STATUS_LABELS[s]}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+
+                {/* TYPE */}
+                <fieldset>
+                  <legend className="font-mono text-xs text-parchment-400/60 mb-2">Type</legend>
+                  <div className="flex flex-wrap gap-2">
+                    {TYPE_FILTERS.map(t => (
+                      <button
+                        type="button"
+                        key={t}
+                        onClick={() => setTypeFilter(t)}
+                        aria-pressed={typeFilter === t}
+                        aria-label={`Filter by type: ${TYPE_LABELS[t]}`}
+                        className={`font-mono text-xs px-3 py-1.5 border rounded-lg transition-all min-h-[36px] ${
+                          typeFilter === t
+                            ? 'border-gold-500/60 bg-gold-500/15 text-gold-300'
+                            : 'border-parchment-300/15 text-parchment-400 hover:border-gold-500/30'
+                        }`}
+                      >
+                        {TYPE_LABELS[t]}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+
+                {/*
+                  Responsive Fix: tag filter collapses on mobile behind a toggle button.
+                  13+ tags wrapping to 6 lines would make the filter section taller than
+                  the viewport on small screens before the user sees any publications.
+                */}
+                <fieldset>
+                  <legend className="font-mono text-xs text-parchment-400/60 mb-2">
+                    Topic
+                    {tagFilter && (
+                      <span className="ml-2 text-gold-400">· {tagFilter}</span>
+                    )}
+                  </legend>
+                  <button
+                    type="button"
+                    onClick={() => setShowTags(!showTags)}
+                    aria-expanded={showTags}
+                    aria-controls="tag-filter-panel"
+                    className="flex items-center gap-2 w-full text-left"
+                  >
+                    <span className="font-mono text-xs text-parchment-400/80 cursor-pointer select-none">
+                      {showTags ? 'Hide topics' : 'Show topics'}
+                    </span>
+                    <span className="ml-auto text-parchment-400/60">
+                      {showTags
+                        ? <ChevronUp size={12} aria-hidden="true" />
+                        : <ChevronDown size={12} aria-hidden="true" />
+                      }
+                    </span>
+                  </button>
+
+                  <AnimatePresence>
+                    {showTags && (
+                      <motion.div
+                        id="tag-filter-panel"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="flex flex-wrap gap-2 mt-3">
+                          <button
+                            type="button"
+                            onClick={() => setTagFilter(null)}
+                            aria-pressed={!tagFilter}
+                            className={`font-mono text-xs px-3 py-1 border rounded-lg transition-all min-h-[36px] ${
+                              !tagFilter
+                                ? 'border-gold-500/60 bg-gold-500/15 text-gold-300'
+                                : 'border-parchment-300/15 text-parchment-400 hover:border-gold-500/30'
+                            }`}
+                          >
+                            All
+                          </button>
+                          {ALL_TAGS.map(tag => (
+                            <button
+                              type="button"
+                              key={tag}
+                              onClick={() => setTagFilter(tag === tagFilter ? null : tag)}
+                              aria-pressed={tagFilter === tag}
+                              className={`font-mono text-xs px-3 py-1 border rounded-lg transition-all min-h-[36px] ${
+                                tagFilter === tag
+                                  ? 'border-gold-500/60 bg-gold-500/15 text-gold-300'
+                                  : 'border-parchment-300/15 text-parchment-400 hover:border-gold-500/30'
+                              }`}
+                            >
+                              {tag}
+                            </button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </fieldset>
+              </div>
+            </SectionReveal>
+
+            {/* COUNT — Fix: full opacity for WCAG contrast compliance */}
+            <p className="font-mono text-xs text-parchment-400 mb-5" aria-live="polite" aria-atomic="true">
+              Showing <span className="text-gold-400 font-semibold">{filtered.length}</span> of {sourceTotal} {deferredStatus === 'under_review' ? 'manuscripts' : 'publications'}
+            </p>
+
+            {/* LIST */}
+            {publicationList}
+
+            {filtered.length === 0 && (
+              <div className="text-center py-20 text-parchment-400 font-mono text-sm" role="status">
+                No publications match the selected filters.
+              </div>
+            )}
+
+            {/* Cross-linking to Applied Systems & Research Notes */}
+            <SectionReveal delay={0.2}>
+              <div className="mt-16 pt-12 border-t border-gold-500/10 grid sm:grid-cols-2 gap-4">
+                <Link
+                  href="/projects/"
+                  className="glass-card p-6 border border-gold-500/15 hover:border-gold-500/40 transition-all group flex items-start gap-4"
+                >
+                  <div className="w-10 h-10 border border-gold-500/20 bg-gold-500/5 flex items-center justify-center text-gold-400 group-hover:scale-105 transition-transform flex-shrink-0">
+                    <Code2 size={18} aria-hidden="true" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-lg text-parchment-100 group-hover:text-gold-300 transition-colors">
+                      Research Projects
+                    </h3>
+                    <p className="font-body text-xs text-parchment-400 mt-1 leading-relaxed">
+                      See these modeling methods applied in simulation frameworks and code.
+                    </p>
+                    <span className="font-mono text-xs text-gold-400/80 mt-3 inline-flex items-center gap-1 group-hover:underline">
+                      Explore {projects.length} Projects <ArrowRight size={11} aria-hidden="true" />
+                    </span>
+                  </div>
+                </Link>
+
+                <Link
+                  href="/blog/"
+                  className="glass-card p-6 border border-gold-500/15 hover:border-gold-500/40 transition-all group flex items-start gap-4"
+                >
+                  <div className="w-10 h-10 border border-gold-500/20 bg-gold-500/5 flex items-center justify-center text-gold-400 group-hover:scale-105 transition-transform flex-shrink-0">
+                    <Layers size={18} aria-hidden="true" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-lg text-parchment-100 group-hover:text-gold-300 transition-colors">
+                      Research Notes &amp; Summaries
+                    </h3>
+                    <p className="font-body text-xs text-parchment-400 mt-1 leading-relaxed">
+                      Read concise breakdowns covering the problem motivation, key contributions, and takeaways.
+                    </p>
+                    <span className="font-mono text-xs text-gold-400/80 mt-3 inline-flex items-center gap-1 group-hover:underline">
+                      Read {blogPosts.length} Research Notes <ArrowRight size={11} aria-hidden="true" />
+                    </span>
+                  </div>
+                </Link>
+              </div>
+            </SectionReveal>
+
+          </div>
+        </div>
+      </PageTransition>
+    </>
+  )
+}

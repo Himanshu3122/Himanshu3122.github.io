@@ -1,0 +1,20 @@
+# Himanshu Singh — Electrical Engineering Researcher
+
+> Personal academic website: https://himanshu3122.github.io/
+
+Himanshu Singh is a B.Tech. Electrical Engineering student at the Institute of Engineering & Management (IEM), Kolkata, India. His research models the electrical power demand of cloud and AI data centers, using stochastic workload and traffic models, component-level load models, and power-system simulation to study energy efficiency and grid stability.
+
+## Pages
+
+- **Home**: [https://himanshu3122.github.io/](https://himanshu3122.github.io/) — Research vision, featured projects, and research knowledge graph.
+- **About**: [https://himanshu3122.github.io/about/](https://himanshu3122.github.io/about/) — Biography, education at IEM Kolkata, research experience, skills, and achievements.
+- **Research**: [https://himanshu3122.github.io/research/](https://himanshu3122.github.io/research/) — Accepted papers and manuscripts under review.
+- **Projects**: [https://himanshu3122.github.io/projects/](https://himanshu3122.github.io/projects/) — Data-center power analysis, AI data-center load modeling, and V2G smart-grid optimization.
+- **Research Notes**: [https://himanshu3122.github.io/blog/](https://himanshu3122.github.io/blog/) — Short write-ups of project findings.
+- **News**: [https://himanshu3122.github.io/news/](https://himanshu3122.github.io/news/) — Timeline of paper acceptances, internships, and awards.
+- **Contact**: [https://himanshu3122.github.io/contact/](https://himanshu3122.github.io/contact/) — Collaboration and contact details.
+
+## Profiles
+
+- GitHub: https://github.com/Himanshu3122
+- Email: himanshuee.24@gmail.com

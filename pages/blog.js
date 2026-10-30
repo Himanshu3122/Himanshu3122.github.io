@@ -1,0 +1,306 @@
+import Head from 'next/head'
+import Link from 'next/link'
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { Clock, ArrowRight, Tag, ChevronDown, ChevronUp, MapPin, Image as ImageIcon, ExternalLink, BookOpen, Code2 } from 'lucide-react'
+import Meta from '../components/Meta'
+import PageTransition from '../components/PageTransition'
+import SectionReveal from '../components/SectionReveal'
+import GraphicalAbstract, { fullSizeUrl } from '../components/GraphicalAbstract'
+import { blogPosts } from '../data/blog'
+import { profile } from '../data/profile'
+import { SITE_URL } from '../data/site'
+import { jsonLd } from '../lib/jsonld'
+
+/* Schema.org Blog and BlogPosting structured data for rich search engine indexing */
+const BLOG_JSONLD = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  name: `Research Notes | ${profile.name}`,
+  url: `${SITE_URL}/blog/`,
+  description: `Research notes and project write-ups on data-center power, smart grids, and stochastic modeling by ${profile.name}.`,
+  publisher: {
+    '@type': 'Person',
+    name: profile.name,
+    url: `${SITE_URL}/`,
+  },
+  blogPost: blogPosts.map((post) => ({
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    url: `${SITE_URL}/blog/#note-${post.id}`,
+    keywords: post.tags,
+    articleSection: post.category,
+    author: {
+      '@type': 'Person',
+      name: profile.name,
+      url: `${SITE_URL}/`,
+    },
+  })),
+}
+
+export default function Blog() {
+  const [expanded, setExpanded] = useState(null)
+  /*
+    Posts opened at least once. Until then a post's graphical abstract is
+    display:none: it sits inside a max-h-0 overflow-hidden panel, and a
+    zero-height clip still counts as "intersecting" for loading="lazy", so
+    scrolling this page used to download all ~3.5 MB of abstracts while every
+    post was collapsed. The <img> stays in the static HTML for crawlers.
+  */
+  const [opened, setOpened] = useState(() => new Set())
+
+  const toggle = (id) => {
+    setExpanded(expanded === id ? null : id)
+    if (!opened.has(id)) setOpened(new Set(opened).add(id))
+  }
+
+  return (
+    <>
+      <Meta 
+        title="Research Notes" 
+        description={`${blogPosts.length} research notes by ${profile.name} on data-center power modeling, smart grids, and stochastic simulation.`}
+      />
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLd(BLOG_JSONLD) }}
+        />
+      </Head>
+
+      <PageTransition>
+        <div className="min-h-screen pt-28 pb-24">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6">
+
+            <SectionReveal>
+              <div className="mb-16">
+                <div className="flex items-center gap-4 mb-4">
+                  <span className="w-2 h-2 rounded-full bg-gold-400 shadow-[0_0_10px_rgba(56,189,248,0.8)]" aria-hidden="true" />
+                  <span className="text-sm font-semibold text-gold-400">Writing</span>
+                </div>
+                <h1
+                  className="font-display font-light text-parchment-100 mb-4"
+                  style={{ fontSize: 'clamp(2.25rem, 8vw, 4.5rem)' }}
+                >
+                  Research <span className="gold-text italic">Notes</span>
+                </h1>
+                <p className="font-body text-parchment-300 max-w-2xl mb-6">
+                  {blogPosts.length} notes drawn from my research projects, each distilled into a concise,
+                  reader-friendly post covering key findings, contributions, and practical implications.
+                </p>
+                <div className="section-divider" />
+              </div>
+            </SectionReveal>
+
+            <div className="space-y-5" role="feed" aria-label="Research articles">
+              {blogPosts.map((post, i) => {
+                const isOpen = expanded === post.id
+
+                return (
+                  <motion.article
+                    key={post.id}
+                    id={`note-${post.id}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.05 }}
+                    className="glass-card pub-card-accent pl-7 group"
+                  >
+                    <div className="p-5">
+
+                      {/* Meta row */}
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3">
+                        <span className="font-mono text-xs text-gold-400/70 border border-gold-500/20 px-2 py-0.5 rounded-lg">
+                          {post.category}
+                        </span>
+                        <span className="flex items-center gap-1 font-mono text-xs text-parchment-400/60">
+                          <Clock size={10} aria-hidden="true" />{post.readTime}
+                        </span>
+                        <span className="font-mono text-xs text-parchment-400/40">
+                          {post.date.slice(0, 'YYYY-MM'.length)}
+                        </span>
+                        {post.venue && (
+                          <span className="flex items-center gap-1 font-mono text-xs text-parchment-400/50 border border-parchment-400/15 px-2 py-0.5 rounded-lg">
+                            <MapPin size={9} aria-hidden="true" />{post.venue}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Title */}
+                      <h2 className="font-display text-xl leading-snug text-parchment-100 mb-2 group-hover:text-gold-100 transition-colors">
+                        {post.title}
+                      </h2>
+
+                      {/* Excerpt */}
+                      <p className="font-body text-sm text-parchment-300 leading-relaxed mb-4">
+                        {post.excerpt}
+                      </p>
+
+                      {/* Tags + expand toggle */}
+                      <div className="flex items-center justify-between pt-3 border-t border-noir-600/60 gap-3">
+                        <div className="flex flex-wrap gap-1.5 min-w-0">
+                          {post.tags.map(tag => (
+                            <span key={tag} className="flex items-center gap-1 tag-badge">
+                              <Tag size={8} aria-hidden="true" />{tag}
+                            </span>
+                          ))}
+                        </div>
+                        {/* Responsive Fix: flex-shrink-0 + min-w keeps button from being squeezed */}
+                        <button
+                          onClick={() => toggle(post.id)}
+                          aria-expanded={isOpen}
+                          aria-controls={`post-content-${post.id}`}
+                          aria-label={isOpen ? `Collapse ${post.title}` : `Expand ${post.title}`}
+                          className="flex items-center gap-1.5 font-mono text-xs text-parchment-400 hover:text-gold-400 transition-colors flex-shrink-0 min-h-[36px] min-w-[60px] justify-end px-1"
+                        >
+                          {isOpen
+                            ? <><ChevronUp size={11} aria-hidden="true" />Less</>
+                            : <><ChevronDown size={11} aria-hidden="true" />More</>
+                          }
+                        </button>
+                      </div>
+
+                      {/* Expanded detail — fully rendered into static HTML so search engines index full text */}
+                      <div
+                        id={`post-content-${post.id}`}
+                        aria-hidden={!isOpen}
+                        className={`transition-all duration-300 overflow-hidden ${
+                          isOpen
+                            ? 'max-h-[3500px] opacity-100 mt-5 pt-5 border-t border-gold-500/10'
+                            : 'max-h-0 opacity-0 pointer-events-none'
+                        }`}
+                      >
+                        <div className="space-y-5">
+
+                          {post.summary && (
+                            <div>
+                              <p className="font-mono text-xs text-gold-400/60 font-semibold mb-2">Overview</p>
+                              <p className="font-body text-sm text-parchment-300 leading-relaxed">{post.summary}</p>
+                            </div>
+                          )}
+
+                          {post.keyContributions && (
+                            <div>
+                              <p className="font-mono text-xs text-gold-400/60 font-semibold mb-2">Key Contributions</p>
+                              <ul className="space-y-1.5">
+                                {post.keyContributions.map((c, j) => (
+                                  <li key={j} className="flex items-start gap-2 font-body text-sm text-parchment-300 leading-relaxed">
+                                    <span className="text-gold-400 mt-1 flex-shrink-0" aria-hidden="true">›</span>{c}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {post.implications && (
+                            <div>
+                              <p className="font-mono text-xs text-gold-400/60 font-semibold mb-2">Practical Implications</p>
+                              <p className="font-body text-sm text-parchment-300 leading-relaxed">{post.implications}</p>
+                            </div>
+                          )}
+
+                          {post.graphicalAbstract && (
+                            <div className={opened.has(post.id) ? undefined : 'hidden'}>
+                              <div className="flex items-center justify-between mb-2">
+                                <p className="font-mono text-xs text-gold-400/60 font-semibold flex items-center gap-1.5">
+                                  <ImageIcon size={12} className="text-gold-400" aria-hidden="true" />
+                                  Graphical Abstract
+                                </p>
+                                <a
+                                  href={fullSizeUrl(post.graphicalAbstract)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="font-mono text-[11px] text-gold-400 hover:underline flex items-center gap-1"
+                                >
+                                  <ExternalLink size={10} aria-hidden="true" /> Open in New Tab
+                                </a>
+                              </div>
+                              <div className="relative group rounded-md overflow-hidden border border-gold-500/20 bg-noir-900/60 p-1">
+                                <GraphicalAbstract
+                                  slug={post.graphicalAbstract}
+                                  title={post.title}
+                                  className="w-full h-auto max-h-[420px] object-contain rounded-md transition-transform duration-300 group-hover:scale-[1.01]"
+                                />
+                              </div>
+                            </div>
+                          )}
+
+                        </div>
+                      </div>
+
+                    </div>
+                  </motion.article>
+                )
+              })}
+            </div>
+
+            {/* Cross-linking to Research Archive & Projects */}
+            <SectionReveal delay={0.25}>
+              <div className="mt-12 grid sm:grid-cols-2 gap-4">
+                <Link
+                  href="/research/"
+                  className="glass-card p-6 border border-gold-500/15 hover:border-gold-500/40 transition-all group flex items-start gap-4"
+                >
+                  <div className="w-10 h-10 border border-gold-500/20 bg-gold-500/5 flex items-center justify-center text-gold-400 group-hover:scale-105 transition-transform flex-shrink-0">
+                    <BookOpen size={18} aria-hidden="true" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-lg text-parchment-100 group-hover:text-gold-300 transition-colors">
+                      Publications
+                    </h3>
+                    <p className="font-body text-xs text-parchment-400 mt-1 leading-relaxed">
+                      Accepted papers and manuscripts under review.
+                    </p>
+                    <span className="font-mono text-xs text-gold-400/80 mt-3 inline-flex items-center gap-1 group-hover:underline">
+                      Explore Research Archive <ArrowRight size={11} aria-hidden="true" />
+                    </span>
+                  </div>
+                </Link>
+
+                <Link
+                  href="/projects/"
+                  className="glass-card p-6 border border-gold-500/15 hover:border-gold-500/40 transition-all group flex items-start gap-4"
+                >
+                  <div className="w-10 h-10 border border-gold-500/20 bg-gold-500/5 flex items-center justify-center text-gold-400 group-hover:scale-105 transition-transform flex-shrink-0">
+                    <Code2 size={18} aria-hidden="true" />
+                  </div>
+                  <div>
+                    <h3 className="font-display text-lg text-parchment-100 group-hover:text-gold-300 transition-colors">
+                      Research Projects
+                    </h3>
+                    <p className="font-body text-xs text-parchment-400 mt-1 leading-relaxed">
+                      Browse the code and simulation frameworks behind these notes.
+                    </p>
+                    <span className="font-mono text-xs text-gold-400/80 mt-3 inline-flex items-center gap-1 group-hover:underline">
+                      View Projects <ArrowRight size={11} aria-hidden="true" />
+                    </span>
+                  </div>
+                </Link>
+              </div>
+            </SectionReveal>
+
+            <SectionReveal delay={0.3}>
+              <div className="mt-16 glass-card p-8 text-center border border-gold-500/20">
+                <h3 className="font-display text-2xl text-parchment-100 mb-3">Stay Updated</h3>
+                <p className="font-body text-parchment-300 text-sm mb-6">
+                  Follow on GitHub for new code and project updates.
+                </p>
+                <a
+                  href={profile.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Follow on GitHub (opens in new tab)"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gold-500 text-noir-900 text-sm font-semibold hover:bg-gold-400 transition-all min-h-[44px]"
+                >
+                  Follow on GitHub <ArrowRight size={12} aria-hidden="true" />
+                </a>
+              </div>
+            </SectionReveal>
+
+          </div>
+        </div>
+      </PageTransition>
+    </>
+  )
+}
