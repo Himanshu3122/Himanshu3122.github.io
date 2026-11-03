@@ -19,7 +19,7 @@ export const newsData = [
   {
     id: 8,
     date: 'October 2026',
-    title: 'Paper accepted: A NHPP-Based Stochastic Electrical Power Profiling of LLM Inference Workloads in GPU Clusters — ICEPE 2026',
+    title: 'Paper accepted: A Non-Homogeneous Poisson Process Framework for Dynamic Load Modeling of LLM Inference in GPU Clusters — ICEPE 2026',
   },
   {
     id: 7,
