@@ -52,6 +52,7 @@ My work combines stochastic modeling (non-homogeneous Poisson processes, jump-di
         "Core: Signals & Systems, Control Systems, Electrical Machines I/II, Power Systems I/II, Analog Electronics, EMFT, Microprocessors",
         "Modeling & Optimization: Queueing Theory, Markov Chains, Stochastic Processes",
       ],
+      thesis: "Dynamic Load Modeling and Stability Analysis of High-Density Computational Infrastructure",
       current: true,
     },
     {

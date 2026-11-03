@@ -205,10 +205,10 @@ export default function About({ totalPapers, totalProjects }) {
                             </li>
                           ))}
                         </ul>
-                        {edu.thesisInterest && (
+                        {edu.thesis && (
                           <div className="p-3 bg-gold-500/5 border border-gold-500/10 rounded-lg">
-                            <p className="text-xs font-semibold text-gold-400 mb-1">Thesis Interest</p>
-                            <p className="font-body text-sm text-parchment-200">{edu.thesisInterest}</p>
+                            <p className="text-xs font-semibold text-gold-400 mb-1">Bachelor&apos;s Thesis</p>
+                            <p className="font-body text-sm text-parchment-200">{edu.thesis}</p>
                           </div>
                         )}
                       </motion.div>
