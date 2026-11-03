@@ -88,8 +88,6 @@ My work combines stochastic modeling (non-homogeneous Poisson processes, jump-di
         "Implemented a linear power superposition model that demonstrated a persistent 6 kW infrastructure power floor despite over 70% reductions in user traffic.",
         "Advisor: Dr. Bhimsen Tudu, Associate Professor, Department of Power Engineering, Jadavpur University.",
       ],
-      link: "https://drive.google.com/file/d/199BUUsclsRXmHCtvltpn9RiiK99qOxQF/view?usp=drive_link",
-      linkLabel: "Project Report",
     },
     {
       role: "IoT Intern",
