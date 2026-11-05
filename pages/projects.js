@@ -9,6 +9,7 @@ import SectionReveal from '../components/SectionReveal'
 import ProjectCard from '../components/ProjectCard'
 import { projects } from '../data/projects'
 import { publications } from '../data/publications'
+import { underReviewPublications } from '../data/underReview'
 import { SITE_URL, SITE_NAME } from '../data/site'
 import { jsonLd } from '../lib/jsonld'
 
@@ -46,10 +47,19 @@ const PROJECTS_JSONLD = {
   every abstract and BibTeX entry to the browser for a handful of titles.
 */
 export async function getStaticProps() {
+  const allPapers = [...publications, ...underReviewPublications]
   const linkedPapers = {}
   for (const project of projects) {
-    const paper = project.paper && publications.find(p => p.pdf === project.paper || p.doi === project.paper)
-    if (paper) linkedPapers[project.id] = { title: paper.title, href: paper.pdf || paper.doi }
+    const paper = project.paperId && allPapers.find(p => p.id === project.paperId)
+    if (paper) {
+      const external = paper.preprint || paper.pdf || paper.doi || null
+      linkedPapers[project.id] = {
+        title: paper.title,
+        status: paper.statusLabel,
+        href: external || '/research/',
+        external: Boolean(external),
+      }
+    }
   }
   return { props: { linkedPapers } }
 }
@@ -161,16 +171,23 @@ function ProjectModal({ project, linkedPaper, onClose }) {
 
             {linkedPaper && (
               <div className="p-4 border border-gold-500/20 bg-gold-500/5 rounded-lg">
-                <p className="font-mono text-[10px] text-gold-400/70 font-semibold mb-3">Peer Reviewed</p>
-                <p className="font-display text-sm text-parchment-100 leading-snug mb-3">{linkedPaper.title}</p>
-                <a 
-                  href={linkedPaper.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-mono text-[10px] text-gold-400 hover:underline flex items-center gap-1"
-                >
-                  Read Publication <ExternalLink size={10} />
-                </a>
+                <p className="font-mono text-[10px] text-gold-400/70 font-semibold mb-3">Related Paper</p>
+                <p className="font-display text-sm text-parchment-100 leading-snug mb-2">{linkedPaper.title}</p>
+                <p className="text-xs text-parchment-400 mb-3">{linkedPaper.status}</p>
+                {linkedPaper.external ? (
+                  <a
+                    href={linkedPaper.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-mono text-[10px] text-gold-400 hover:underline flex items-center gap-1"
+                  >
+                    Read Paper <ExternalLink size={10} />
+                  </a>
+                ) : (
+                  <Link href={linkedPaper.href} className="font-mono text-[10px] text-gold-400 hover:underline flex items-center gap-1">
+                    View on Research page <ArrowRight size={10} />
+                  </Link>
+                )}
               </div>
             )}
 

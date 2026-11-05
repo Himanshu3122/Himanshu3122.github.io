@@ -8,6 +8,7 @@ const STATUS_COLORS = {
   'Research':     'text-violet-400 bg-violet-900/20 border-violet-700/30',
   'Completed':    'text-emerald-400 bg-emerald-900/20 border-emerald-700/30',
   'Ongoing':      'text-amber-400 bg-amber-900/20 border-amber-700/30',
+  'Preprint':     'text-violet-400 bg-violet-900/20 border-violet-700/30',
 }
 
 export default function ProjectCard({ project, onClick }) {
