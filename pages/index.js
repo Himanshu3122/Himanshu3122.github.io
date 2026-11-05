@@ -99,7 +99,8 @@ export async function getStaticProps() {
   return {
     props: {
       paperCount: publications.length + underReviewPublications.length,
-      publishedCount: publications.length,
+      publishedCount: publications.filter(p => p.status === 'published' || p.status === 'accepted').length,
+      underReviewCount: underReviewPublications.length,
       projectCount: projects.length,
       blogCount: blogPosts.length,
       journalVenues: venuesByType('journal'),
@@ -115,7 +116,7 @@ export async function getStaticProps() {
 }
 
 export default function Home({
-  paperCount, publishedCount, projectCount, blogCount,
+  paperCount, publishedCount, underReviewCount, projectCount, blogCount,
   journalVenues, conferenceVenues,
   recent, featuredProjects, recentBlog, recentNews,
 }) {
@@ -153,7 +154,7 @@ export default function Home({
     },
     {
       icon: <BookOpen size={16} />,
-      value: paperCount - publishedCount,
+      value: underReviewCount,
       suffix: '',
       label: 'Under Review',
       sub: 'journal & conference manuscripts',
@@ -454,7 +455,7 @@ export default function Home({
                 href="/research"
                 className="text-sm font-semibold text-gold-400 hover-underline flex items-center gap-1 self-end min-h-[44px]"
               >
-                All {publishedCount} Papers <ArrowRight size={12} aria-hidden="true" />
+                All {paperCount} Papers <ArrowRight size={12} aria-hidden="true" />
               </Link>
             </div>
 

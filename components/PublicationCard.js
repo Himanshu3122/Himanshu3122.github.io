@@ -13,12 +13,14 @@ const STATUS_STYLES = {
   accepted:     'bg-sky-900/40 text-sky-300 border-sky-600/30',
   review:       'bg-amber-900/40 text-amber-300 border-amber-600/30',
   under_review: 'bg-amber-900/40 text-amber-300 border-amber-600/30',
+  preprint:     'bg-violet-900/40 text-violet-300 border-violet-600/30',
 }
 
 const TYPE_LABELS = {
   conference:   'Conference',
   journal:      'Journal',
   book_chapter: 'Book Chapter',
+  preprint:     'Preprint',
 }
 
 const TAG_PALETTE = {

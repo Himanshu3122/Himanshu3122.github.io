@@ -21,7 +21,7 @@ const normalize = (value) => String(value ?? '').trim().toLowerCase()
 
 // Add 'first_author' or 'book_chapter' back here once such entries exist
 const TYPE_FILTERS    = ['All', 'conference', 'journal']
-const STATUS_FILTERS  = ['All', 'published', 'accepted', 'under_review']
+const STATUS_FILTERS  = ['All', 'published', 'accepted', 'under_review', 'preprint']
 
 const TYPE_LABELS = {
   All:          'All Types',
@@ -36,6 +36,7 @@ const STATUS_LABELS = {
   published:    'Published',
   accepted:     'Accepted',
   under_review: 'Under Review',
+  preprint:     'Preprint',
 }
 
 /*
@@ -148,6 +149,7 @@ export default function Research() {
 
   const counts = {
     published: publications.filter(p => p.status === 'published').length,
+    preprint:  publications.filter(p => p.status === 'preprint').length,
     accepted:  publications.filter(p => p.status === 'accepted').length,
     review:    underReviewPublications.length,
     total:     allPublications.length,
@@ -197,9 +199,10 @@ export default function Research() {
                   Research <span className="gold-text italic">Archive</span>
                 </h1>
                 <p className="font-body text-parchment-300 max-w-2xl mb-8">
-                  {publications.length} accepted {publications.length === 1 ? 'paper' : 'papers'} plus{' '}
-                  {underReviewPublications.length} manuscripts under review, spanning data-center power modeling,
-                  multi-agent LLM workflows, and safe multi-agent reinforcement learning. I also write short{' '}
+                  {counts.accepted + counts.published} accepted {counts.accepted + counts.published === 1 ? 'paper' : 'papers'},{' '}
+                  {counts.review} manuscripts under review, and {counts.preprint}{' '}
+                  {counts.preprint === 1 ? 'preprint' : 'preprints'}, spanning data-center power modeling, multi-agent
+                  LLM workflows, resilient consensus, and safe multi-agent reinforcement learning. I also write short{' '}
                   <Link href="/blog" className="text-gold-400 hover:underline">research notes</Link> on
                   my projects' findings and practical implications.
                 </p>
@@ -211,7 +214,7 @@ export default function Research() {
             <SectionReveal>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-10">
                 {[
-                  { icon: <FileText  size={16} />, value: counts.published, label: 'Published',    bg: 'bg-emerald-900/20 border-emerald-600/20' },
+                  { icon: <FileText  size={16} />, value: counts.preprint,  label: 'Preprints',    bg: 'bg-violet-900/20 border-violet-600/20' },
                   { icon: <TrendingUp size={16}/>, value: counts.accepted,  label: 'Accepted',     bg: 'bg-sky-900/20 border-sky-600/20' },
                   { icon: <Layers    size={16} />, value: counts.review,    label: 'Under Review', bg: 'bg-amber-900/20 border-amber-600/20' },
                   { icon: <BookOpen  size={16} />, value: counts.total,     label: 'Total',        bg: 'bg-gold-900/20 border-gold-600/20' },

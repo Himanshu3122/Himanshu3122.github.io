@@ -12,6 +12,11 @@ import { jsonLd } from '../lib/jsonld'
 // Each item only requires id, date, and title.
 export const newsData = [
   {
+    id: 10,
+    date: 'November 2026',
+    title: 'Preprint released: Resilient Consensus Under Time-Varying Delays and Adversarial Agents: Safety, Rates, and Delay-Induced Equivocation — Preprints.org',
+  },
+  {
     id: 9,
     date: 'October 2026',
     title: 'Preprint released: Risk-Calibrated Communication and Adaptive Safe Recovery in Hierarchical Multi-Agent Reinforcement Learning under Compound Communication Failures',
