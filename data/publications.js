@@ -46,7 +46,7 @@ export const publications = [
     doi: null,
     preprint: "https://www.preprints.org/manuscript/202611.0552",
     pdf: null,
-    code: null,
+    code: "https://github.com/Himanshu3122/Resilient-Consensus-Under-Time-Varying-Delays-and-Adversarial-Agents.",
     dataset: null,
     notebook: null,
     graphicalAbstract: null,
