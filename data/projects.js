@@ -114,17 +114,4 @@ export const projects = [
     status: "Preprint",
     paperId: 2,
   },
-  {
-    id: 9,
-    title: "Physics-Informed Intrusion Detection for Inverter-Dominated Grids",
-    description: "A simulation study of physics-informed intrusion detection combined with shielded multi-agent mitigation for distribution grids dominated by inverter-based resources.",
-    technologies: ["Physics-Informed Detection", "Multi-Agent Systems", "Safety Shielding", "Power System Simulation"],
-    github: null,
-    demo: null,
-    tags: ["Cybersecurity", "Power Systems", "Multi-Agent Systems"],
-    themes: ["Power Systems", "Multi-Agent Systems"],
-    featured: false,
-    status: "Under Review",
-    paperId: 106,
-  },
 ]
