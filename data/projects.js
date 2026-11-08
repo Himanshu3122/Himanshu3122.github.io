@@ -111,7 +111,7 @@ export const projects = [
     tags: ["Multi-Agent Systems", "Resilient Consensus", "Safety"],
     themes: ["Multi-Agent Systems"],
     featured: false,
-    status: "Preprint",
-    paperId: 2,
+    status: "Under Review",
+    paperId: 107,
   },
 ]

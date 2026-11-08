@@ -21,7 +21,8 @@ const normalize = (value) => String(value ?? '').trim().toLowerCase()
 
 // Add 'first_author' or 'book_chapter' back here once such entries exist
 const TYPE_FILTERS    = ['All', 'conference', 'journal']
-const STATUS_FILTERS  = ['All', 'published', 'accepted', 'under_review', 'preprint']
+// Add 'preprint' back once a standalone preprint (status: 'preprint') is listed
+const STATUS_FILTERS  = ['All', 'published', 'accepted', 'under_review']
 
 const TYPE_LABELS = {
   All:          'All Types',
@@ -149,7 +150,7 @@ export default function Research() {
 
   const counts = {
     published: publications.filter(p => p.status === 'published').length,
-    preprint:  publications.filter(p => p.status === 'preprint').length,
+    preprint:  allPublications.filter(p => p.preprint).length,
     accepted:  publications.filter(p => p.status === 'accepted').length,
     review:    underReviewPublications.length,
     total:     allPublications.length,
@@ -199,10 +200,10 @@ export default function Research() {
                   Research <span className="gold-text italic">Archive</span>
                 </h1>
                 <p className="font-body text-parchment-300 max-w-2xl mb-8">
-                  {counts.accepted + counts.published} accepted {counts.accepted + counts.published === 1 ? 'paper' : 'papers'},{' '}
-                  {counts.review} manuscripts under review, and {counts.preprint}{' '}
-                  {counts.preprint === 1 ? 'preprint' : 'preprints'}, spanning data-center power modeling, multi-agent
-                  LLM workflows, resilient consensus, and safe multi-agent reinforcement learning. I also write short{' '}
+                  {counts.accepted + counts.published} accepted {counts.accepted + counts.published === 1 ? 'paper' : 'papers'} and{' '}
+                  {counts.review} manuscripts under review ({counts.preprint} with public preprints), spanning data-center
+                  power modeling, multi-agent LLM workflows, resilient consensus, and safe multi-agent reinforcement
+                  learning. I also write short{' '}
                   <Link href="/blog" className="text-gold-400 hover:underline">research notes</Link> on
                   my projects' findings and practical implications.
                 </p>
@@ -214,7 +215,7 @@ export default function Research() {
             <SectionReveal>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-10">
                 {[
-                  { icon: <FileText  size={16} />, value: counts.preprint,  label: 'Preprints',    bg: 'bg-violet-900/20 border-violet-600/20' },
+                  { icon: <FileText  size={16} />, value: counts.preprint,  label: 'With Preprint',    bg: 'bg-violet-900/20 border-violet-600/20' },
                   { icon: <TrendingUp size={16}/>, value: counts.accepted,  label: 'Accepted',     bg: 'bg-sky-900/20 border-sky-600/20' },
                   { icon: <Layers    size={16} />, value: counts.review,    label: 'Under Review', bg: 'bg-amber-900/20 border-amber-600/20' },
                   { icon: <BookOpen  size={16} />, value: counts.total,     label: 'Total',        bg: 'bg-gold-900/20 border-gold-600/20' },

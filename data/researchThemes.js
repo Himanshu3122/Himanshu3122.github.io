@@ -64,7 +64,7 @@ export const researchNodes = [
     group: "core",
     size: 16,
     description: "Multi-agent LLM workflows and safe hierarchical multi-agent RL",
-    papers: ["rev-101", "rev-102", "rev-104", "pub-2"],
+    papers: ["rev-101", "rev-102", "rev-104", "rev-107"],
   },
   {
     id: "simulation",
