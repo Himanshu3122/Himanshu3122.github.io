@@ -14,6 +14,7 @@ import { blogPosts } from '../data/blog'
 import { newsData } from './news'
 
 import Meta from '../components/Meta'
+import XIcon from '../components/XIcon'
 import AuthorHighlight from '../components/AuthorHighlight'
 const ResearchGraph = dynamic(() => import('../components/ResearchGraph'), { ssr: false })
 import ErrorBoundary from '../components/ErrorBoundary'
@@ -58,6 +59,7 @@ const socialLinks = [
   { icon: <BookOpen size={18} />, href: profile.scholar, label: 'Google Scholar Profile' },
   { icon: <Github size={18} />, href: profile.github, label: 'GitHub' },
   { icon: <Linkedin size={18} />, href: profile.linkedin, label: 'LinkedIn' },
+  { icon: <XIcon size={17} />, href: profile.twitter, label: 'X (Twitter)' },
   { icon: <Mail size={18} />, href: `mailto:${profile.email}`, label: 'Email' },
 ].filter(s => s.href)
 

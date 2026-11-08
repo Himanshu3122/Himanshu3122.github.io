@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Github, Linkedin, Mail, BookOpen, Link2 } from 'lucide-react'
 import { profile } from '../data/profile'
+import XIcon from './XIcon'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -9,6 +10,7 @@ export default function Footer() {
     { icon: <BookOpen size={18} />, href: profile.scholar,  label: 'Google Scholar Profile' },
     { icon: <Github   size={18} />, href: profile.github,   label: 'GitHub' },
     { icon: <Linkedin size={18} />, href: profile.linkedin, label: 'LinkedIn' },
+    { icon: <XIcon    size={17} />, href: profile.twitter,  label: 'X (Twitter)' },
     { icon: <Mail     size={18} />, href: '/contact',           label: 'Contact' },
     { icon: <Link2    size={18} />, href: profile.orcid,    label: 'ORCID Profile' },
   ].filter(s => s.href)

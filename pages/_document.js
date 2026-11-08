@@ -3,7 +3,7 @@ import { SITE_NAME, SITE_SHORT_NAME, SITE_URL } from '../data/site'
 import { profile } from '../data/profile'
 import { jsonLd } from '../lib/jsonld'
 
-const SAME_AS = [profile.github, profile.scholar, profile.orcid].filter(Boolean)
+const SAME_AS = [profile.github, profile.scholar, profile.orcid, profile.twitter].filter(Boolean)
 
 export default function Document() {
   return (

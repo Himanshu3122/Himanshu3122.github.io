@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { MapPin, Calendar, Award, BookOpen, Microscope, GraduationCap, Github, Linkedin, Mail, Link2, Code2, ExternalLink } from 'lucide-react'
 import Meta from '../components/Meta'
+import XIcon from '../components/XIcon'
 import PageTransition from '../components/PageTransition'
 import SectionReveal from '../components/SectionReveal'
 import { profile } from '../data/profile'
@@ -29,6 +30,7 @@ export default function About({ totalPapers, totalProjects }) {
   const socialLinks = [
     { icon: <Github   size={16} />, href: profile.github,            label: 'GitHub' },
     { icon: <Linkedin size={16} />, href: profile.linkedin,          label: 'LinkedIn' },
+    { icon: <XIcon    size={15} />, href: profile.twitter,           label: 'X (Twitter)' },
     { icon: <Mail     size={16} />, href: `mailto:${profile.email}`, label: 'Email' },
     { icon: <Link2    size={16} />, href: profile.orcid,             label: 'ORCID Profile' },
   ].filter(s => s.href)
@@ -51,7 +53,7 @@ export default function About({ totalPapers, totalProjects }) {
       },
       knowsAbout: profile.researchInterests,
       award: profile.awards.map(a => `${a.title} (${a.issuer}, ${a.year})`),
-      sameAs: [profile.github, profile.scholar, profile.orcid].filter(Boolean),
+      sameAs: [profile.github, profile.scholar, profile.orcid, profile.twitter].filter(Boolean),
     },
   }
 

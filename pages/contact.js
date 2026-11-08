@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Github, Linkedin, BookOpen, Copy, Check, MapPin, MessageSquare, Link2, Code2, ArrowRight } from 'lucide-react'
 import Meta from '../components/Meta'
+import XIcon from '../components/XIcon'
 import PageTransition from '../components/PageTransition'
 import SectionReveal from '../components/SectionReveal'
 import { profile } from '../data/profile'
@@ -31,7 +32,7 @@ const CONTACT_JSONLD = {
       addressLocality: 'Kolkata',
       addressCountry: 'IN',
     },
-    sameAs: [profile.github, profile.scholar, profile.orcid].filter(Boolean),
+    sameAs: [profile.github, profile.scholar, profile.orcid, profile.twitter].filter(Boolean),
   },
 }
 
@@ -85,6 +86,7 @@ const socialLinks = [
   { label: 'Google Scholar', sub: 'Academic publications',     icon: <BookOpen  size={20} />, href: profile.scholar,  color: 'text-blue-400'       },
   { label: 'GitHub',         sub: `@${profile.githubHandle}`, icon: <Github    size={20} />, href: profile.github,   color: 'text-parchment-200'   },
   { label: 'LinkedIn',       sub: 'Professional network',      icon: <Linkedin  size={20} />, href: profile.linkedin, color: 'text-blue-400'        },
+  { label: 'X (Twitter)',    sub: `@${profile.twitterHandle}`, icon: <XIcon     size={19} />, href: profile.twitter,  color: 'text-parchment-200'   },
   { label: 'ORCID',          sub: 'Researcher ID',             icon: <Link2     size={20} />, href: profile.orcid,    color: 'text-emerald-400'     },
 ].filter(s => s.href)
 
