@@ -213,9 +213,8 @@ export default function Research() {
 
             {/* STATS */}
             <SectionReveal>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-10">
+              <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-10">
                 {[
-                  { icon: <FileText  size={16} />, value: counts.preprint,  label: 'With Preprint',    bg: 'bg-violet-900/20 border-violet-600/20' },
                   { icon: <TrendingUp size={16}/>, value: counts.accepted,  label: 'Accepted',     bg: 'bg-sky-900/20 border-sky-600/20' },
                   { icon: <Layers    size={16} />, value: counts.review,    label: 'Under Review', bg: 'bg-amber-900/20 border-amber-600/20' },
                   { icon: <BookOpen  size={16} />, value: counts.total,     label: 'Total',        bg: 'bg-gold-900/20 border-gold-600/20' },
