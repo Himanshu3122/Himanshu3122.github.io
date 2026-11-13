@@ -87,7 +87,7 @@ const socialLinks = [
   { label: 'GitHub',         sub: `@${profile.githubHandle}`, icon: <Github    size={20} />, href: profile.github,   color: 'text-parchment-200'   },
   { label: 'LinkedIn',       sub: 'Professional network',      icon: <Linkedin  size={20} />, href: profile.linkedin, color: 'text-blue-400'        },
   { label: 'X (Twitter)',    sub: `@${profile.twitterHandle}`, icon: <XIcon     size={19} />, href: profile.twitter,  color: 'text-parchment-200'   },
-  { label: 'ORCID',          sub: 'Researcher ID',             icon: <Link2     size={20} />, href: profile.orcid,    color: 'text-emerald-400'     },
+  { label: 'ORCID',          sub: '0009-0007-8597-1816',             icon: <Link2     size={20} />, href: profile.orcid,    color: 'text-emerald-400'     },
 ].filter(s => s.href)
 
 /* Shared input/textarea class */

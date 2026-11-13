@@ -17,7 +17,7 @@ export const profile = {
   twitterHandle: "Control63308560",
   // Placeholder: replace with your real LinkedIn profile URL
   linkedin: "https://www.linkedin.com/",
-  orcid: null,
+  orcid: "https://orcid.org/0009-0007-8597-1816",
   cv: "/Himanshu_Singh_CV.pdf",
 
   bio: "I'm a 4th-year Electrical Engineering undergraduate at the Institute of Engineering & Management, Kolkata, working where power systems meet computing. My research models how cloud and AI data centers draw power: stochastic workload and traffic models, component-level load models, and what those loads mean for grid stability. I also work on multi-agent systems: queueing and branching-process models of multi-agent LLM workflows, and safe multi-agent reinforcement learning for EV charging and communication-constrained control.",
