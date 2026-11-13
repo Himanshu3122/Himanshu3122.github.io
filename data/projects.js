@@ -98,7 +98,7 @@ export const projects = [
     tags: ["EV Charging", "Reinforcement Learning", "Smart Grid"],
     themes: ["Power Systems", "Machine Learning"],
     featured: false,
-    status: "Under Review",
+    status: "Accepted",
     paperId: 104,
   },
   {

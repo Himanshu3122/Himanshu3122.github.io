@@ -12,6 +12,11 @@ import { jsonLd } from '../lib/jsonld'
 // Each item only requires id, date, and title.
 export const newsData = [
   {
+    id: 11,
+    date: 'November 2026',
+    title: 'Paper accepted: Constrained Multi-Agent Reinforcement Learning with a Convex Safety Projection for Charging a Mixed 2W/3W/4W EV Fleet on a Weak Low-Voltage Network — IEEE GECA 2027',
+  },
+  {
     id: 10,
     date: 'November 2026',
     title: 'Preprint released: Resilient Consensus Under Time-Varying Delays and Adversarial Agents: Safety, Rates, and Delay-Induced Equivocation — Preprints.org',
