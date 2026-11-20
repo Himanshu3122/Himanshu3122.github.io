@@ -17,6 +17,11 @@ import Meta from '../components/Meta'
 import XIcon from '../components/XIcon'
 import AuthorHighlight from '../components/AuthorHighlight'
 const ResearchGraph = dynamic(() => import('../components/ResearchGraph'), { ssr: false })
+/* Three.js scene: client-only, and kept out of the initial bundle */
+const ComputeGridScene = dynamic(() => import('../components/ComputeGridScene'), {
+  ssr: false,
+  loading: () => <div className="h-[280px] sm:h-[360px] lg:h-[420px]" aria-hidden="true" />,
+})
 import ErrorBoundary from '../components/ErrorBoundary'
 import CircuitBackground from '../components/CircuitBackground'
 import ProjectCover from '../components/ProjectCover'
@@ -318,6 +323,13 @@ export default function Home({
                 </a>
               ))}
             </motion.div>
+          </div>
+
+          {/* 3D "Compute meets Grid" diorama */}
+          <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pb-10">
+            <ErrorBoundary message="The 3D scene could not be displayed.">
+              <ComputeGridScene />
+            </ErrorBoundary>
           </div>
 
           {/* Stats row + current focus */}

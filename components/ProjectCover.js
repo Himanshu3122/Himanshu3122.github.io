@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+
 /*
   Small line-art header for project cards. Each project picks a `cover`
   in data/projects.js; unknown or missing values fall back to `circuit`.
@@ -120,16 +122,73 @@ const COVERS = {
   ),
 }
 
+/*
+  3D tilt: while the pointer is over the card that contains this cover, the
+  illustration rotates toward it (perspective set on the cover) and a soft
+  shine follows the pointer. Pointer devices only; CSS transitions handle
+  the easing, and the global reduced-motion rule shortens them.
+*/
 export default function ProjectCover({ cover }) {
+  const ref = useRef(null)
+
+  useEffect(() => {
+    const el = ref.current
+    const card = el?.closest('.glass-card')
+    if (!el || !card || !window.matchMedia('(hover: hover) and (pointer: fine)').matches) return undefined
+    const onMove = (e) => {
+      const r = card.getBoundingClientRect()
+      const x = (e.clientX - r.left) / r.width - 0.5
+      const y = (e.clientY - r.top) / r.height - 0.5
+      el.style.setProperty('--ry', `${x * 22}deg`)
+      el.style.setProperty('--rx', `${-y * 16}deg`)
+      el.style.setProperty('--sx', `${(x + 0.5) * 100}%`)
+      el.style.setProperty('--sy', `${(y + 0.5) * 100}%`)
+      el.style.setProperty('--lift', '1.08')
+      el.style.setProperty('--shine', '1')
+    }
+    const onLeave = () => {
+      el.style.setProperty('--ry', '0deg')
+      el.style.setProperty('--rx', '0deg')
+      el.style.setProperty('--lift', '1')
+      el.style.setProperty('--shine', '0')
+    }
+    card.addEventListener('pointermove', onMove)
+    card.addEventListener('pointerleave', onLeave)
+    return () => {
+      card.removeEventListener('pointermove', onMove)
+      card.removeEventListener('pointerleave', onLeave)
+    }
+  }, [])
+
   return (
     <div
+      ref={ref}
       className="relative h-28 -mx-6 -mt-6 mb-5 rounded-t-2xl overflow-hidden border-b border-gold-500/10 bg-gradient-to-br from-gold-500/15 via-noir-700/40 to-noir-800/60 text-gold-400"
+      style={{ perspective: '600px' }}
       aria-hidden="true"
     >
       <div className="absolute inset-0 bg-grid-pattern opacity-60" style={{ backgroundSize: '22px 22px' }} />
-      <svg viewBox="0 0 320 120" className="relative w-full h-full" preserveAspectRatio="xMidYMid meet">
+      <svg
+        viewBox="0 0 320 120"
+        className="relative w-full h-full"
+        preserveAspectRatio="xMidYMid meet"
+        style={{
+          transform: 'rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(var(--lift, 1))',
+          transition: 'transform 0.25s ease-out',
+          filter: 'drop-shadow(0 6px 10px rgb(var(--gold-500) / 0.25))',
+        }}
+      >
         {COVERS[cover] || COVERS.circuit}
       </svg>
+      {/* Moving shine */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          opacity: 'var(--shine, 0)',
+          transition: 'opacity 0.3s ease',
+          background: 'radial-gradient(260px circle at var(--sx, 50%) var(--sy, 50%), rgb(255 255 255 / 0.10), transparent 60%)',
+        }}
+      />
     </div>
   )
 }
