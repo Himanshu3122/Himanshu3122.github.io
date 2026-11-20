@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, FileText } from 'lucide-react'
 import { profile } from '../data/profile'
+import ThemeToggle from './ThemeToggle'
 
 const navLinks = [
   { label: 'Home',     href: '/' },
@@ -127,6 +128,7 @@ export default function Navbar() {
             >
               <FileText size={13} aria-hidden="true" /> CV
             </a>
+            <ThemeToggle className="ml-1" />
           </div>
 
           {/* Crawler and screen-reader accessible navigation ensuring all search bots index every route */}
@@ -137,6 +139,8 @@ export default function Navbar() {
               </Link>
             ))}
           </nav>
+
+          <ThemeToggle className="md:hidden ml-auto mr-1" />
 
           {/* Mobile hamburger — min 44px touch target */}
           <button

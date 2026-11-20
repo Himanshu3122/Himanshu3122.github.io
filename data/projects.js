@@ -3,6 +3,7 @@
 export const projects = [
   {
     id: 1,
+    cover: "datacenter",
     title: "Green Data Center Power Analysis — Bivariate Traffic & Workload Modeling",
     description: "Decoupled bivariate simulation framework that models network traffic and internal compute load as independent stochastic signals to evaluate cluster-level power consumption in multi-tenant cloud data centers.",
     problem: "Cloud data centers are expected to scale their power draw with user demand, but idle infrastructure and background compute keep consumption high even when traffic falls, a gap that simple utilization-based models miss.",
@@ -19,6 +20,7 @@ export const projects = [
   },
   {
     id: 2,
+    cover: "grid",
     title: "AI Data Center Dynamic Load Modeling & Load Frequency Control",
     description: "Dynamic load model for large-scale AI data centers built on stochastic workload modeling and jump-diffusion processes, used to study load frequency control (LFC) and grid stability in MATLAB/Simulink.",
     problem: "AI training and inference make data-center demand bursty and fast-changing, and conventional static load models cannot capture the power swings that matter for grid frequency stability.",
@@ -35,6 +37,7 @@ export const projects = [
   },
   {
     id: 3,
+    cover: "v2g",
     title: "V2G-Enabled Smart City Infrastructure on the IEEE 33-Bus System",
     description: "Design and optimization of a vehicle-to-grid (V2G) enabled smart-city distribution network on the IEEE 33-bus system, combining a reinforcement-learning scheduler with dynamic energy pricing and a BFS-PSO optimization framework.",
     problem: "Uncoordinated EV charging stresses distribution networks at peak load, while parked EV batteries are an untapped flexible resource.",
@@ -51,6 +54,7 @@ export const projects = [
   },
   {
     id: 4,
+    cover: "gpu",
     title: "NHPP Load Model for LLM Inference on GPU Clusters",
     description: "A non-homogeneous Poisson process framework for dynamic load modeling of LLM inference workloads running on GPU clusters, capturing how their electrical demand varies over time.",
     technologies: ["Stochastic Modeling", "NHPP", "GPU Clusters", "LLM Inference"],
@@ -64,6 +68,7 @@ export const projects = [
   },
   {
     id: 5,
+    cover: "queue",
     title: "Queueing & Branching-Process Models of Multi-Agent LLM Workflows",
     description: "Queueing and branching-process models that predict the latency, failure, and cost of multi-agent LLM workflows directly from the structure of the workflow.",
     technologies: ["Queueing Theory", "Branching Processes", "LLMs", "Multi-Agent Systems"],
@@ -77,6 +82,7 @@ export const projects = [
   },
   {
     id: 6,
+    cover: "hierarchy",
     title: "Risk-Calibrated Communication & Safe Recovery in Hierarchical MARL",
     description: "Risk-calibrated communication and adaptive safe recovery for hierarchical multi-agent reinforcement learning when agents face compound communication failures.",
     technologies: ["Multi-Agent RL", "Hierarchical RL", "Safe RL"],
@@ -90,6 +96,7 @@ export const projects = [
   },
   {
     id: 7,
+    cover: "ev",
     title: "Safe Multi-Agent RL for Mixed EV Fleet Charging",
     description: "Constrained multi-agent reinforcement learning with a convex safety projection for charging a mixed 2W/3W/4W electric-vehicle fleet on a weak low-voltage distribution network.",
     technologies: ["Constrained MARL", "Convex Optimization", "Distribution Networks"],
@@ -103,6 +110,7 @@ export const projects = [
   },
   {
     id: 8,
+    cover: "consensus",
     title: "Resilient Consensus Under Delays & Adversarial Agents",
     description: "Analysis of resilient consensus in multi-agent systems with time-varying delays and adversarial agents, covering safety guarantees, convergence rates, and delay-induced equivocation.",
     technologies: ["Distributed Consensus", "Multi-Agent Systems", "Control Theory"],

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Code2, ExternalLink, Github } from 'lucide-react'
+import ProjectCover from './ProjectCover'
 
 const STATUS_COLORS = {
   'Published':    'text-emerald-400 bg-emerald-900/20 border-emerald-700/30',
@@ -39,6 +40,8 @@ export default function ProjectCard({ project, onClick }) {
       />
 
       <div className="relative flex flex-col flex-1">
+        <ProjectCover cover={project.cover} />
+
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="w-9 h-9 border border-gold-500/20 bg-gold-500/5 flex items-center justify-center group-hover:border-gold-500/50 transition-colors flex-shrink-0">

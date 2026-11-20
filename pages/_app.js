@@ -4,6 +4,9 @@ import { AnimatePresence, MotionConfig } from 'framer-motion'
 import { Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import ScrollProgress from '../components/ScrollProgress'
+import BackToTop from '../components/BackToTop'
+import { useEffect } from 'react'
 
 /*
   Performance: fonts are self-hosted via next/font instead of the
@@ -32,8 +35,27 @@ const jetbrains = JetBrains_Mono({
 })
 
 export default function App({ Component, pageProps, router }) {
+  /*
+    Feeds the pointer position into the card under the cursor so its
+    .glass-card::after glow (globals.css) follows the mouse. One listener
+    for the whole page instead of one per card.
+  */
+  useEffect(() => {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
+    const onMove = (e) => {
+      const card = e.target.closest?.('.glass-card')
+      if (!card) return
+      const r = card.getBoundingClientRect()
+      card.style.setProperty('--mx', `${e.clientX - r.left}px`)
+      card.style.setProperty('--my', `${e.clientY - r.top}px`)
+    }
+    document.addEventListener('pointermove', onMove, { passive: true })
+    return () => document.removeEventListener('pointermove', onMove)
+  }, [])
+
   return (
     <>
+      <ScrollProgress />
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
@@ -70,6 +92,7 @@ export default function App({ Component, pageProps, router }) {
           </AnimatePresence>
         </main>
         <Footer />
+        <BackToTop />
       </MotionConfig>
     </>
   )

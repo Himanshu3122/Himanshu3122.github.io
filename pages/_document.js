@@ -10,6 +10,12 @@ export default function Document() {
     <Html lang="en" className="dark">
       <Head>
         <meta charSet="utf-8" />
+        {/* Applies a saved light/dark choice before first paint (components/ThemeToggle.js) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "try{if(localStorage.getItem('theme')==='light'){var d=document.documentElement;d.classList.remove('dark');d.classList.add('light')}}catch(e){}",
+          }}
+        />
         <meta
           name="keywords"
           content={`${profile.name}, Electrical Engineering, Data Center Power, Stochastic Modeling, Smart Grid, Power Systems, Machine Learning, ${profile.institution}`}

@@ -18,6 +18,8 @@ import XIcon from '../components/XIcon'
 import AuthorHighlight from '../components/AuthorHighlight'
 const ResearchGraph = dynamic(() => import('../components/ResearchGraph'), { ssr: false })
 import ErrorBoundary from '../components/ErrorBoundary'
+import CircuitBackground from '../components/CircuitBackground'
+import ProjectCover from '../components/ProjectCover'
 
 /* ─── Animated Counter ─── */
 function AnimatedCounter({ target, suffix = '', delay = 0 }) {
@@ -109,7 +111,7 @@ export async function getStaticProps() {
       conferenceVenues: venuesByType('conference'),
       recent: recent.map(p => pick(p, ['id', 'title', 'authorsStr', 'tags', 'status', 'statusLabel'])),
       featuredProjects: projects.filter(p => p.featured).slice(0, 3)
-        .map(p => pick(p, ['id', 'title', 'status', 'description', 'tags'])),
+        .map(p => pick(p, ['id', 'title', 'status', 'description', 'tags', 'cover'])),
       recentBlog: blogPosts.slice(0, 2)
         .map(p => pick(p, ['id', 'title', 'category', 'readTime', 'excerpt'])),
       recentNews: [...newsData].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3),
@@ -179,6 +181,7 @@ export default function Home({
             style={{ backgroundSize: '56px 56px' }}
             aria-hidden="true"
           />
+          <CircuitBackground />
           <div
             className="absolute -top-48 left-1/2 -translate-x-1/2 bg-radial-gold opacity-50 pointer-events-none"
             style={{ width: 'min(1000px, 130vw)', height: 'min(640px, 100vw)' }}
@@ -470,6 +473,7 @@ export default function Home({
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                   className="pub-card-accent glass-card p-5 pl-7"
+                  data-status={pub.status}
                 >
                   <div className="flex flex-col sm:flex-row sm:flex-wrap items-start justify-between gap-3">
                     <div className="w-full sm:flex-1 sm:min-w-0">
@@ -533,9 +537,10 @@ export default function Home({
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="glass-card p-6 flex flex-col justify-between group hover:border-gold-500/30 transition-all"
+                  className="glass-card p-6 flex flex-col justify-between group hover:border-gold-500/30 transition-all overflow-hidden"
                 >
                   <div>
+                    <ProjectCover cover={project.cover} />
                     <div className="flex items-center justify-between mb-3">
                       <div className="w-8 h-8 border border-gold-500/20 bg-gold-500/5 flex items-center justify-center text-gold-400 flex-shrink-0">
                         <Code2 size={14} aria-hidden="true" />

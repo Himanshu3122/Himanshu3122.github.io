@@ -7,27 +7,33 @@ module.exports = {
   ],
   theme: {
     extend: {
+      /*
+        Palette colours are CSS variables (space-separated RGB channels) set in
+        styles/globals.css, so the whole site can switch between dark and light
+        themes. `<alpha-value>` keeps opacity modifiers like bg-noir-800/85 working.
+      */
       colors: {
         noir: {
-          900: '#070b14',
-          800: '#0b111e',
-          700: '#101828',
-          600: '#162033',
-          500: '#1f2b42',
+          900: 'rgb(var(--noir-900) / <alpha-value>)',
+          800: 'rgb(var(--noir-800) / <alpha-value>)',
+          700: 'rgb(var(--noir-700) / <alpha-value>)',
+          600: 'rgb(var(--noir-600) / <alpha-value>)',
+          500: 'rgb(var(--noir-500) / <alpha-value>)',
         },
+        // "gold" is the accent colour (electric blue); the name predates the redesign
         gold: {
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
+          100: 'rgb(var(--gold-100) / <alpha-value>)',
+          200: 'rgb(var(--gold-200) / <alpha-value>)',
+          300: 'rgb(var(--gold-300) / <alpha-value>)',
+          400: 'rgb(var(--gold-400) / <alpha-value>)',
+          500: 'rgb(var(--gold-500) / <alpha-value>)',
+          600: 'rgb(var(--gold-600) / <alpha-value>)',
         },
         parchment: {
-          100: '#e6edf6',
-          200: '#cfdbea',
-          300: '#a9b8cc',
-          400: '#8495ad',
+          100: 'rgb(var(--parchment-100) / <alpha-value>)',
+          200: 'rgb(var(--parchment-200) / <alpha-value>)',
+          300: 'rgb(var(--parchment-300) / <alpha-value>)',
+          400: 'rgb(var(--parchment-400) / <alpha-value>)',
         },
         crimson: {
           400: '#e05c5c',

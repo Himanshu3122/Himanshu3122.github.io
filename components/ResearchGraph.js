@@ -160,7 +160,7 @@ export default function ResearchGraph() {
         .attr('dy', d => d.size + 16)
         .attr('font-family', "'JetBrains Mono', monospace")
         .attr('font-size', '9px')
-        .attr('fill', 'rgba(207, 219, 234,0.65)')
+        .style('fill', 'rgb(var(--parchment-200) / 0.7)')
 
       sim.on('tick', () => {
         link

@@ -179,6 +179,7 @@ export default function PublicationCard({ pub, index = 0 }) {
         exit={{ opacity: 0, y: -8 }}
         transition={{ duration: 0.35, delay: index * 0.04 }}
         className="pub-card-accent glass-card pl-3 sm:pl-7"
+        data-status={pub.status}
       >
         <div className="p-3 sm:p-5">
 
