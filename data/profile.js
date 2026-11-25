@@ -59,7 +59,7 @@ My work combines stochastic modeling (non-homogeneous Poisson processes, jump-di
     },
     {
       degree: "Higher Secondary (Class XII)",
-      institution: "Kendriya Vidyalaya No. 2 Ishapore",
+      institution: "Kendriya Vidyalaya",
       location: "Kolkata, India",
       period: "2022",
       details: [
@@ -69,7 +69,7 @@ My work combines stochastic modeling (non-homogeneous Poisson processes, jump-di
     },
     {
       degree: "Secondary (Class X)",
-      institution: "Kendriya Vidyalaya No. 2 Ishapore",
+      institution: "Kendriya Vidyalaya",
       location: "Kolkata, India",
       period: "2020",
       details: [
