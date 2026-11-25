@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 import Head from 'next/head'
 import { AnimatePresence, MotionConfig } from 'framer-motion'
-import { Space_Grotesk, Inter, JetBrains_Mono } from 'next/font/google'
+import localFont from 'next/font/local'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import ScrollProgress from '../components/ScrollProgress'
@@ -15,23 +15,30 @@ import { useEffect } from 'react'
   late-loading fonts (size-adjusted fallbacks are generated at build).
 */
 /*
-  Space Grotesk (headings) and Inter (body) are variable fonts, so no weight
-  list is needed — one file per subset covers every weight.
+  The font files live in styles/fonts/ (latin subset, downloaded once from
+  Google Fonts) so the build never has to fetch them over the network — a
+  failed download from Google used to fail the whole deploy. All three are
+  variable fonts: one file covers every weight in the given range.
 */
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
+const spaceGrotesk = localFont({
+  src: '../styles/fonts/SpaceGrotesk-latin.woff2',
+  weight: '300 700',
   display: 'swap',
+  fallback: ['system-ui', 'sans-serif'],
 })
 
-const inter = Inter({
-  subsets: ['latin'],
+const inter = localFont({
+  src: '../styles/fonts/Inter-latin.woff2',
+  weight: '100 900',
   display: 'swap',
+  fallback: ['system-ui', 'sans-serif'],
 })
 
-const jetbrains = JetBrains_Mono({
-  subsets: ['latin'],
-  weight: ['300', '400', '500'],
+const jetbrains = localFont({
+  src: '../styles/fonts/JetBrainsMono-latin.woff2',
+  weight: '300 500',
   display: 'swap',
+  fallback: ['ui-monospace', 'monospace'],
 })
 
 export default function App({ Component, pageProps, router }) {
